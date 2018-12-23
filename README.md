@@ -46,7 +46,7 @@ Please execute the following commands and instructions to deploy the AWS infrast
 ## Step 1: Create a New AMI with Packer (optional)
 You can now use Packer and Terraform to provision your AWS EC2 instances along with other AWS infrastructure.
 
-We have already used Packer to create Amazon Machine Image ami-059f80ec49ae9b193 which uses Nomad 0.8.6 and Consul 1.3.0. You can use this as the basis for your EC2 instances. This AMI only exists in the AWS us-east-1 region. If you want to create a similar AMI in a different region or if you make any changes to any of the files in the shared directory, you will need to create your own AMI with Packer. This is very simple. Starting from the home directory, do the following (being sure to specify the region and a vaid source_ami for that region in packer.json if the region is different from us-east-1):
+We have already used Packer to create Amazon Machine Image ami-05284711efe1b9202 which uses Nomad 0.8.6 and Consul 1.3.0. You can use this as the basis for your EC2 instances. This AMI only exists in the AWS us-east-1 region. If you want to create a similar AMI in a different region or if you make any changes to any of the files in the shared directory, you will need to create your own AMI with Packer. This is very simple. Starting from the home directory, do the following (being sure to specify the region and a vaid source_ami for that region in packer.json if the region is different from us-east-1):
 
 ```
 export AWS_ACCESS_KEY_ID=<your_aws_key>
@@ -100,12 +100,12 @@ After connecting, if you run the `pwd` command, you will see that you are in the
 
 If you run `consul members`, you should see the server and client instances.
 
-Verify that Nomad is running with `ps -ef | grep nomad`. You should see "/usr/local/bin/nomad agent -config=/etc/nomad.d/nomad.hcl". If you run `nomad status`, you should see that the sockshop and sockshopui jobs are running.
+Verify that Nomad is running with `ps -ef | grep nomad`. You should see "/usr/local/bin/nomad agent -config=/etc/nomad.d/nomad.hcl". If you run `nomad status`, you should see that the catalogue-with-connect job is running.
 
 ## Step 7: Verify the Deployment
 The demo will automatically launch the catalogue app and Catalogue-db database and associated Consul Connect proxies using the command `nomad job run catalogue-with-connect.nomad`. You do not need to run these yourself.
 
-You can check the status of the sockshop jobs on the server or clients by running `nomad job status catalogue-with-connect`.  All tasks should be running. You can also see job and task status in the Nomad UI and even view the task logs in the UI.
+You can check the status of the job on the server or clients by running `nomad job status catalogue-with-connect`.  All tasks should be running. You can also see job and task status in the Nomad UI and even view the task logs in the UI.
 
 ## Step 8: Check the Running Tasks with the Nomad UI
 You can access the Nomad UI by pointing your browser to http://<server_ip>:4646, replacing \<server_ip\> with the public IP address of one of your servers. You can verify that the catalogue microservices and proxies are running as Nomad tasks.
