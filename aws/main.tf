@@ -24,7 +24,7 @@ module "nomadconsul" {
   ttl     = "${var.ttl}"
 }
 
-resource "null_resource" "start_sock_shop" {
+resource "null_resource" "start_catalogue" {
   provisioner "remote-exec" {
     inline = [
       "sleep 180",
