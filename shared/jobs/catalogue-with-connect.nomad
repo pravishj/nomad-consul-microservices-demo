@@ -78,15 +78,15 @@ job "catalogue-with-connect" {
       template {
         data = <<EOH
 {
-    "name": "${NOMAD_META_proxy_name}-proxy",
+    "name": "{{ env "NOMAD_META_proxy_name" }}-proxy",
     "port": {{ env "NOMAD_PORT_proxy" }},
     "kind": "connect-proxy",
     "proxy": {
-      "destination_service_name": "${NOMAD_META_proxy_name}",
-      "destination_service_id": "${NOMAD_META_proxy_name}",
+      "destination_service_name": "{{ env "NOMAD_META_proxy_name" }}",
+      "destination_service_id": "{{ env "NOMAD_META_proxy_name" }}",
       "upstreams": [
         {
-          "destination_name": "${NOMAD_META_proxy_target}",
+          "destination_name": "{{ env "NOMAD_META_proxy_target" }}",
           "local_bind_address": "{{ env "NOMAD_IP_upstream" }}",
           "local_bind_port": {{ env "NOMAD_PORT_upstream" }}
         }

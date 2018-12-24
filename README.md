@@ -13,7 +13,9 @@ Please note the following facts related to communications:
 Together, all the above points guarantee that the catalogue app can only talk to the catalogue-db database through the Consul Connect proxies, but only if there is no Deny intention prohibiting this.
 
 ## How the catalogue-proxy is Run
-The Consul Connect proxy, catalogue-proxy, is run by the Nomad task, catalogueproxy, which launches the run-catalogue-proxy.sh script. This script first registers the catalogue-proxy service definition with Consul using the Consul agent/service/register API endpoint. The service definition is generated from a template contained inside the catalogue-with-connect.nomad job specification file and uses ports dynamically selected by Nomad. The script then runs the proxy with that service definition using the `consul connect proxy -sidecar-for catalogue` CLI command.
+The Consul Connect proxy, catalogue-proxy, is run by the Nomad task, catalogueproxy, which launches the run-proxy.sh script. This script first registers the catalogue-proxy service definition with Consul using the Consul agent/service/register API endpoint. The service definition is generated from a template contained inside the catalogue-with-connect.nomad job specification file and uses ports dynamically selected by Nomad. The script then runs the proxy with that service definition using the `consul connect proxy -sidecar-for catalogue` CLI command.
+
+Note that the run-proxy.sh script could be used to run multiple proxies within a single Nomad job since the proxy name is passed in with an argument. 
 
 The reader might wonder why we first register the service definition and then run `consul connect proxy` with the `-sidecar-for catalogue` arguments instead of running `consul connect proxy -service catalogue -upstream catalogue-db:${NOMAD_PORT_tcp}` which would register the proxy as a service and run it in a single step. We do this because the `consul connect proxy` CLI does not support specifying a local_bind_address for upstream proxies, instead defaulting to 127.0.0.1. An earlier version of this demo did run the longer version of the CLI command without first registering the catalogue-proxy service, but this required us to run the Docker containers on the host network which is generally undesirable. Using the host network was necessary because Docker containers in other networks cannot bind to the host's 127.0.0.1 IP.
 
@@ -46,7 +48,7 @@ Please execute the following commands and instructions to deploy the AWS infrast
 ## Step 1: Create a New AMI with Packer (optional)
 You can now use Packer and Terraform to provision your AWS EC2 instances along with other AWS infrastructure.
 
-We have already used Packer to create Amazon Machine Image ami-05284711efe1b9202 which uses Nomad 0.8.6 and Consul 1.3.0. You can use this as the basis for your EC2 instances. This AMI only exists in the AWS us-east-1 region. If you want to create a similar AMI in a different region or if you make any changes to any of the files in the shared directory, you will need to create your own AMI with Packer. This is very simple. Starting from the home directory, do the following (being sure to specify the region and a vaid source_ami for that region in packer.json if the region is different from us-east-1):
+We have already used Packer to create Amazon Machine Image ami-01d821506cee7b2c4 which uses Nomad 0.8.6 and Consul 1.3.0. You can use this as the basis for your EC2 instances. This AMI only exists in the AWS us-east-1 region. If you want to create a similar AMI in a different region or if you make any changes to any of the files in the shared directory, you will need to create your own AMI with Packer. This is very simple. Starting from the home directory, do the following (being sure to specify the region and a vaid source_ami for that region in packer.json if the region is different from us-east-1):
 
 ```
 export AWS_ACCESS_KEY_ID=<your_aws_key>
