@@ -66,22 +66,27 @@ job "catalogue-with-connect" {
       driver = "exec"
 
       config {
-        command = "/usr/local/bin/run-catalogue-proxy.sh"
-        args    = ["${NOMAD_IP_proxy}", "${NOMAD_TASK_DIR}"]
+        command = "/usr/local/bin/run-proxy.sh"
+        args    = ["${NOMAD_IP_proxy}", "${NOMAD_TASK_DIR}", "catalogue"]
+      }
+
+      meta {
+        proxy_name = "catalogue"
+        proxy_target = "catalogue-db"
       }
 
       template {
         data = <<EOH
 {
-    "name": "catalogue-proxy",
+    "name": "${NOMAD_META_proxy_name}-proxy",
     "port": {{ env "NOMAD_PORT_proxy" }},
     "kind": "connect-proxy",
     "proxy": {
-      "destination_service_name": "catalogue",
-      "destination_service_id": "catalogue",
+      "destination_service_name": "${NOMAD_META_proxy_name}",
+      "destination_service_id": "${NOMAD_META_proxy_name}",
       "upstreams": [
         {
-          "destination_name": "catalogue-db",
+          "destination_name": "${NOMAD_META_proxy_target}",
           "local_bind_address": "{{ env "NOMAD_IP_upstream" }}",
           "local_bind_port": {{ env "NOMAD_PORT_upstream" }}
         }
@@ -90,7 +95,7 @@ job "catalogue-with-connect" {
 }
 EOH
 
-        destination = "local/catalogue-proxy.json"
+        destination = "local/${NOMAD_META_proxy_name}-proxy.json"
       }
 
 
